@@ -2,9 +2,23 @@ const Project = require("../../domain/entities/Project")
 
 exports.getProjects = async (req, res) => {
   try {
-    const projects = await Project.find()
-    
+
+    const filter = {}
+
+    if (req.query.type) {
+      filter.project_type = req.query.type
+    }
+
+    if (req.query.featured) {
+      filter.featured = req.query.featured === "true"
+    }
+
+    const projects = await Project
+      .find(filter)
+      .sort({ createdAt: -1 })
+
     res.json(projects)
+
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch projects" })
   }

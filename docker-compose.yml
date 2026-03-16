@@ -11,9 +11,9 @@ services:
       MINIO_ROOT_USER: mam-admin
       MINIO_ROOT_PASSWORD: mampasswordforlocal
       TZ: Asia/Bangkok
-      MINIO_SERVER_URL: http://localhost:9000
+      MINIO_SERVER_URL: http://minio:9000
     volumes:
-      - ./data:/data
+      - miniodata:/data
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -23,7 +23,7 @@ services:
       start_period: 10s
     networks:
       - mam-portfolio
-      
+
   minio-init:
     image: minio/mc
     depends_on:
@@ -46,16 +46,21 @@ services:
     restart: unless-stopped
     environment:
       PORT: 4000
-      MONGO_URI: mongodb://host.docker.internal:27017/mamportfolio
+      # MONGO_URI: mongodb://host.docker.internal:27017/mamportfolio
+      MONGO_URI: mongodb://localhost:27017/mamportfolio
       MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
       MINIO_ACCESS_KEY: mam-admin
       MINIO_SECRET_KEY: mampasswordforlocal
       MINIO_BUCKET: portfolio
+
     depends_on:
       - minio
     networks:
       - mam-portfolio
+
 networks:
   mam-portfolio:
-    external: true
+
+volumes:
+  miniodata:

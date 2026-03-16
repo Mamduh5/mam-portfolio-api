@@ -21,7 +21,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-
+    networks:
+      - mam-portfolio
+      
   minio-init:
     image: minio/mc
     depends_on:
@@ -34,3 +36,26 @@ services:
       mc anonymous set download local/portfolio;
       exit 0;
       "
+    networks:
+      - mam-portfolio
+  backend:
+    build: .
+    container_name: mamportfolio-api
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      MONGO_URI: mongodb://host.docker.internal:27017/mamportfolio
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: mam-admin
+      MINIO_SECRET_KEY: mampasswordforlocal
+      MINIO_BUCKET: portfolio
+    depends_on:
+      - minio
+    networks:
+      - mam-portfolio
+networks:
+  mam-portfolio:
+    external: true

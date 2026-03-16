@@ -1,22 +1,20 @@
 const Visit = require("../../domain/entities/VisitLog")
 
 exports.createVisit = async (req, res) => {
-  try {
+    try {
 
-    const visit = await Visit.findOneAndUpdate(
-      {},
-      req.body,
-      {
-        new: true,
-        upsert: true
-      }
-    )
+        const visit = new Visit(req.body)
 
-    res.json(visit)
+        visit.user_agent = req.headers['user-agent']
+        visit.ip_address = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 
-  } catch (err) {
+        await visit.save()
 
-    res.status(500).json({ error: "Failed to create visit" })
+        res.json(visit)
 
-  }
+    } catch (err) {
+
+        res.status(500).json({ error: "Failed to create visit" })
+
+    }
 }

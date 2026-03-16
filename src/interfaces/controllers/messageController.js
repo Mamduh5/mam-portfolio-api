@@ -1,36 +1,31 @@
 const Message = require("../../domain/entities/Message")
 
 exports.getMessage = async (req, res) => {
-  try {
+    try {
 
-    const message = await Message.findOne()
+        const message = await Message.findOne()
 
-    res.json(message)
+        res.json(message)
 
-  } catch (err) {
+    } catch (err) {
 
-    res.status(500).json({ error: "Failed to fetch message" })
+        res.status(500).json({ error: "Failed to fetch message" })
 
-  }
+    }
 }
 
 exports.createMessage = async (req, res) => {
-  try {
+    try {
 
-    const message = await Message.findOneAndUpdate(
-      {},
-      req.body,
-      {
-        new: true,
-        upsert: true
-      }
-    )
+        const message = new Message(req.body)
 
-    res.json(message)
+        await message.save()
 
-  } catch (err) {
+        res.json(message)
 
-    res.status(500).json({ error: "Failed to update message" })
+    } catch (err) {
 
-  }
+        res.status(500).json({ error: "Failed to create message" })
+
+    }
 }

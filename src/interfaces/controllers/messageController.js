@@ -14,7 +14,7 @@ exports.getMessage = async (req, res) => {
   }
 }
 
-exports.updateMessage = async (req, res) => {
+exports.createMessage = async (req, res) => {
   try {
 
     const message = await Message.findOneAndUpdate(

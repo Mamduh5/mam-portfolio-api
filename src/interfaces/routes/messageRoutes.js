@@ -5,7 +5,7 @@ const messageController = require("../controllers/messageController")
 
 router.get("/", messageController.getMessage)
 
-router.put("/", messageController.updateMessage)
+router.post("/", messageController.createMessage)
 
 module.exports = router
 

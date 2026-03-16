@@ -1,0 +1,36 @@
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: mam-admin
+      MINIO_ROOT_PASSWORD: mampasswordforlocal
+      TZ: Asia/Bangkok
+      MINIO_SERVER_URL: http://localhost:9000
+    volumes:
+      - ./data:/data
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set local http://minio:9000 mam-admin mampasswordforlocal;
+      mc mb local/portfolio;
+      mc anonymous set download local/portfolio;
+      exit 0;
+      "

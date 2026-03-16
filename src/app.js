@@ -4,6 +4,7 @@ const morgan = require("morgan")
 const projectRoutes = require("./interfaces/routes/projectRoutes")
 const profileRoutes = require("./interfaces/routes/profileRoutes")
 const messageRoutes = require("./interfaces/routes/messageRoutes")
+const uploadRoutes = require("./interfaces/routes/uploadRoutes")
 const app = express()
 
 app.use(cors())
@@ -11,6 +12,7 @@ app.use(express.json())
 app.use(morgan("dev"))
 app.use("/projects", projectRoutes)
 app.use("/profile", profileRoutes)
-app.use("/message", messageRoutes)
+app.use("/messages", messageRoutes)
+app.use("/upload", uploadRoutes)
 
 module.exports = app

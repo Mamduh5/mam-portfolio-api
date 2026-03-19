@@ -17,6 +17,6 @@ app.use("/profile", profileRoutes)
 app.use("/messages", messageRoutes)
 app.use("/upload", uploadRoutes)
 app.use("/visit", visitRoutes)
-app.set('trust proxy', true)
+app.set('trust proxy', 1)
 
 module.exports = app
